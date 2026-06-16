@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>API Test</title></head>
+<body>
+<h2>API Football - World Cup 2026 Test</h2>
+<div id="output">Testing...</div>
+<script>
+const API_KEY = 'c4c9b669d09891e1339781f330e5c3d4';
+
+async function test() {
+  const out = document.getElementById('output');
+  
+  // Try to find WC 2026 league
+  try {
+    const r = await fetch('https://v3.football.api-sports.io/leagues?search=World+Cup', {
+      headers: { 'x-apisports-key': API_KEY }
+    });
+    const data = await r.json();
+    out.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+  } catch(e) {
+    out.innerHTML = 'Error: ' + e.message;
+  }
+}
+test();
+</script>
+</body>
+</html>
