@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head><title>Football-Data.org Test</title>
+<style>
+body{font-family:monospace;padding:20px;background:#f5f5f5;}
+h2{color:#0a3d1f;}
+pre{background:#fff;padding:12px;border-radius:8px;overflow:auto;font-size:11px;border:1px solid #ddd;max-height:400px;}
+button{padding:8px 16px;background:#1a7a4a;color:#fff;border:none;border-radius:6px;cursor:pointer;margin:4px;font-size:13px;}
+button:hover{background:#2e9e64;}
+.result{margin-top:16px;}
+.label{font-size:12px;font-weight:bold;color:#0a3d1f;margin-bottom:4px;}
+.count{font-size:13px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<h2>⚽ Football-Data.org — WC 2026 Test</h2>
+<button onclick="testMatches()">All Matches</button>
+<button onclick="testLive()">Live/Today</button>
+<button onclick="testScorers()">Top Scorers</button>
+<button onclick="testStandings()">Standings</button>
+<div id="out" class="result"></div>
+<script>
+const KEY = 'c11b53daba38497b917c4cb602e9e979';
+const BASE = 'https://api.football-data.org/v4';
+
+async function call(url, label) {
+  document.getElementById('out').innerHTML = '<p>Loading '+label+'...</p>';
+  try {
+    const r = await fetch(BASE+url, {headers:{'X-Auth-Token': KEY}});
+    const d = await r.json();
+    const count = d.matches?.length || d.scorers?.length || d.standings?.length || JSON.stringify(d).length;
+    document.getElementById('out').innerHTML = 
+      '<div class="label">'+label+'</div>'+
+      '<div class="count">URL: '+url+' | Items: '+count+'</div>'+
+      '<pre>'+JSON.stringify(d.matches?.slice(0,3) || d.scorers?.slice(0,5) || d, null, 2)+'</pre>';
+  } catch(e) {
+    document.getElementById('out').innerHTML = '<p style="color:red">Error: '+e.message+'</p>';
+  }
+}
+
+function testMatches(){ call('/competitions/WC/matches', 'All WC 2026 Matches'); }
+function testLive(){ call('/competitions/WC/matches?status=LIVE', 'Live Matches'); }
+function testScorers(){ call('/competitions/WC/scorers', 'Top Scorers'); }
+function testStandings(){ call('/competitions/WC/standings', 'Standings/Groups'); }
+</script>
+</body>
+</html>
